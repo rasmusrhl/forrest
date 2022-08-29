@@ -5,7 +5,6 @@ library(stringr)
 library(patchwork)
 
 
-options(tibble.print_min = 10)
 
 #Generate some random data
 data <- data.frame(
@@ -28,20 +27,7 @@ tab0 <- data %>%
   ggplot()+
   geom_text(aes(y = sev, x = 1.2, label=sev, hjust=0), size = 4) +
   ylab(NULL) + xlab(NULL) +
-  theme_bw() + 
-  theme(plot.margin=unit(c(.1,.1,.1,.1), "cm"),
-        plot.title = element_text(hjust = 0.5, size=11, face = "bold"),
-        axis.text.x = element_text(color="white", size = 11),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        axis.title.y = element_blank(),
-        legend.position = "none",
-        panel.background = element_blank(),
-        panel.border = element_blank(),
-        panel.grid.major = element_blank(), #these just get rid of borders
-        panel.grid.minor = element_blank(),
-        plot.background = element_blank(),
-        axis.text.y = element_blank())+
+  theme_void()+
   xlim(1,1.5)
 
 
@@ -55,24 +41,13 @@ grapher <- function(typestr, #tells how to subset the data
                     bound_upper=1.9){
   data <- data %>% 
     filter(type==typestr) #filter out the wished subset
-  
   res <- data %>% 
     ggplot(aes(y = sev, x = HR)) +
     geom_vline(xintercept = 1, color = "#11c232", linetype = "dashed", cex = .7, alpha = 1) +
     geom_point(shape = 18, size = 3) +  
     scale_x_continuous(name = "HR [95% CI]", limits = c(bound_lower, bound_upper))+
     ylab(" ") + 
-    theme_bw()+
-    theme(plot.margin=unit(c(.1,.1,.1,.1), "cm"),
-          panel.background = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_blank(),
-          axis.text.y = element_blank(),
-          axis.text.x.bottom = element_text(size = 10, colour = "black"),
-          axis.title.x = element_text(size = 10, colour = "black"),
-          plot.title = element_text(face = "bold"))
-  
+    theme_void()
   #x-axis title only for graphs in the bottom part of the whole combined graph
   if(bottom==F){
     res <- res +
@@ -80,13 +55,11 @@ grapher <- function(typestr, #tells how to subset the data
             axis.text.x.bottom = element_blank(),
             axis.ticks.x = element_blank())
   }
-  
   #arrows for those CI-s which exceed limits
   #the loop basically checks for each datapoint, if its bounds exceed the limits given (bound_lower and bound_upper)
   lower <- data$lower
   upper <- data$upper
   sev <- data$sev
-  
   for(i in 1:nrow(data)){
     if(is.na(lower[i])) { #do we have info on the CI (will leave empty line in the graph if TRUE)?
       #do nothing
@@ -123,26 +96,10 @@ tabber <- function(typestr, title){
     ggplot()+
     geom_text(aes(y = sev, x = 1.05, label=label, hjust=0), size = 4) +
     ylab(NULL) + xlab(NULL) +
-    theme_bw()+
-    theme(axis.text.x = element_text(color="white", size = 11),
-          axis.line = element_blank(),
-          axis.ticks = element_blank(),
-          axis.title.y = element_blank(),
-          legend.position = "none",
-          panel.background = element_blank(),
-          panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_blank(),
-          plot.margin=unit(c(.1,.1,.1,.1), "cm"),
-          axis.text.y = element_blank(),
-          plot.title = element_text(hjust = .5))+
+    theme_void()+
     xlim(1, 1.5)+
     ggtitle(title)
 }
-
-
-
 
 
 #test it out
