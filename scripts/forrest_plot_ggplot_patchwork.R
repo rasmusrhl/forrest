@@ -5,6 +5,7 @@ library(stringr)
 library(patchwork)
 
 
+options(tibble.print_min = 10)
 
 #Generate some random data
 data <- data.frame(
@@ -18,7 +19,8 @@ data <- data.frame(
          sev = factor(sev, levels=c("sev4", "sev3", "sev2", "sev1"))) #just to order them around
 
 
-
+data <-
+data |> tibble()
 
 # Overall sevs column
 tab0 <- data %>% 
@@ -26,7 +28,7 @@ tab0 <- data %>%
   ggplot()+
   geom_text(aes(y = sev, x = 1.2, label=sev, hjust=0), size = 4) +
   ylab(NULL) + xlab(NULL) +
-  theme_bw()+
+  theme_bw() + 
   theme(plot.margin=unit(c(.1,.1,.1,.1), "cm"),
         plot.title = element_text(hjust = 0.5, size=11, face = "bold"),
         axis.text.x = element_text(color="white", size = 11),
